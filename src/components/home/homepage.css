@@ -1,0 +1,419 @@
+/* Property Search & Filter Section */
+.property-search-filter {
+    background-color: #f8f8f8; /* Light background for the section */
+    padding: 40px 20px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.property-search-filter h2 {
+    color: #3f51b5; /* Matching brand color */
+    margin-bottom: 30px;
+    font-size: 2.2em;
+}
+
+/* Search Bar Styling */
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 8px;
+    overflow: hidden; /* Ensures border-radius applies to children */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.search-input {
+    flex-grow: 1; /* Takes up available space */
+    padding: 15px 20px;
+    border: none;
+    font-size: 1.1em;
+    outline: none; /* Remove default outline on focus */
+}
+
+.search-button {
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #303f9f;
+}
+
+/* Filters Container Styling */
+.filters-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow filters to wrap on smaller screens */
+    justify-content: center;
+    gap: 25px; /* Space between filter groups */
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 180px; /* Ensure a minimum width for filter groups */
+}
+
+.filter-group label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.filter-group select,
+.filter-group input[type="range"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    background-color: #fff;
+    appearance: none; /* Reset default select styles for better consistency */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Custom styling for select dropdown arrow */
+.filter-group select {
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23555555" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px; /* Make space for the custom arrow */
+}
+
+
+.filter-group input[type="range"] {
+    height: 8px; /* Thinner slider track */
+    cursor: pointer;
+    background: #e0e0e0;
+    outline: none;
+    padding: 0; /* Remove padding for range input */
+}
+
+/* Style the range slider thumb */
+.filter-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3f51b5;
+    cursor: grab;
+    margin-top: -6px; /* Center thumb vertically on track */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.filter-group input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #3f51b5;
+    cursor: grab;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.filter-group #price-value {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #777;
+    align-self: center; /* Center the price value text */
+}
+
+
+.apply-filters-button,
+.clear-filters-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px; /* Space from filter groups */
+}
+
+.apply-filters-button {
+    background-color: #4caf50; /* Green for action */
+    color: white;
+}
+
+.apply-filters-button:hover {
+    background-color: #43a047;
+}
+
+.clear-filters-button {
+    background-color: #f44336; /* Red for clear/reset */
+    color: white;
+    margin-left: 15px;
+}
+
+.clear-filters-button:hover {
+    background-color: #d32f2f;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .property-search-filter h2 {
+        font-size: 1.8em;
+    }
+
+    .search-bar {
+        flex-direction: column; /* Stack search input and button */
+        border-radius: 0; /* Remove border-radius on search bar for full width */
+        box-shadow: none; /* Remove shadow to look cleaner when stacked */
+    }
+
+    .search-input {
+        border-radius: 5px;
+        margin-bottom: 10px; /* Space between input and button */
+    }
+
+    .search-button {
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .filters-container {
+        flex-direction: column; /* Stack filter groups vertically */
+        padding: 15px;
+        gap: 15px;
+        box-shadow: none; /* Remove shadow on filter container */
+    }
+
+    .filter-group {
+        width: 100%; /* Make filter groups take full width */
+        min-width: unset; /* Remove min-width constraint */
+    }
+
+    .apply-filters-button,
+    .clear-filters-button {
+        width: 100%; /* Make buttons full width */
+        margin-left: 0;
+        margin-bottom: 10px; /* Space between stacked buttons */
+    }
+}
+/* How It Works Section */
+.how-it-works {
+    background-color: #e8eaf6; /* Light background to differentiate from other sections */
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.how-it-works .container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.how-it-works h2 {
+    color: #3f51b5;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.how-it-works .section-description {
+    font-size: 1.1em;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto 50px auto;
+    line-height: 1.8;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid columns */
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.step-card {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px); /* Subtle lift on hover */
+}
+
+.step-icon {
+    font-size: 2em;
+    font-weight: bold;
+    color: #3f51b5;
+    background-color: #e3f2fd; /* Lighter shade of brand color */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 2px solid #3f51b5;
+}
+
+.step-card h3 {
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+.step-card p {
+    color: #666;
+    font-size: 0.95em;
+    line-height: 1.7;
+}
+
+.how-it-works-cta .primary-cta-button {
+    display: inline-block;
+    background-color: #4caf50; /* Green for primary action */
+    color: white;
+    padding: 15px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.how-it-works-cta .primary-cta-button:hover {
+    background-color: #43a047;
+    transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .how-it-works h2 {
+        font-size: 2em;
+    }
+
+    .how-it-works .section-description {
+        font-size: 1em;
+        margin-bottom: 40px;
+    }
+
+    .steps-grid {
+        grid-template-columns: 1fr; /* Single column on small screens */
+    }
+
+    .step-card {
+        padding: 25px;
+    }
+
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.8em;
+    }
+
+    .step-card h3 {
+        font-size: 1.3em;
+    }
+
+    .how-it-works-cta .primary-cta-button {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+}
+.properties {
+    background-color: #99abb8;
+    padding: 60px 20px;
+    align-items: center;
+}
+.properties .container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+/* Container for the property cards */
+#property-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Card styling */
+.property-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: transform 0.2s ease-in-out;
+}
+
+.property-card:hover {
+  transform: translateY(-5px);
+}
+
+.property-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.property-content {
+  padding: 15px;
+}
+
+.property-content h3 {
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.property-content p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.property-stats {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  font-size: 0.9rem;
+}
+
+.property-stats span {
+  flex: 1;
+  text-align: center;
+}
+
+.property-stats span:not(:last-child) {
+  border-right: 1px solid #ccc;
+}
+
+.property-amenities {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.property-amenities li {
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+}
