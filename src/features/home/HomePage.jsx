@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import "./homepage.css";
+import "/src/css/homepage.css"
 import FilterSearch from "./homefiltersearch";
-import Navbar from "./Navbar";
+import Navbar from "../../features/home/Navbar";
 import Footer from "./Footer";
 import Contact from "./Contact";
 
