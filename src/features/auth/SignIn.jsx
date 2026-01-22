@@ -1,64 +1,241 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
+import api from "../../services/api";
 
 function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = { email, password };
-    console.log(formData);
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await api.login(email, password);
+
+      if (response.success) {
+        alert("Welcome back!");
+        // Redirect based on user role
+        const userType =
+          response.data.user.role || response.data.user.user_type;
+        if (userType === "artisan") {
+          navigate("/artisan-dashboard");
+        } else {
+          navigate("/client-dashboard");
+        }
+      } else {
+        setError(response.message || "Login failed");
+      }
+    } catch (err) {
+      setError(err.message || "An error occurred during login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const containerStyle = {
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f5f5f5",
+    padding: "20px",
+  };
+
+  const cardStyle = {
+    backgroundColor: "#fff",
+    borderRadius: "8px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+    padding: "40px",
+    maxWidth: "450px",
+    width: "100%",
+  };
+
+  const titleStyle = {
+    fontSize: "28px",
+    fontWeight: "bold",
+    color: "#2c3e50",
+    marginBottom: "8px",
+    textAlign: "center",
+  };
+
+  const subtitleStyle = {
+    fontSize: "14px",
+    color: "#7f8c8d",
+    textAlign: "center",
+    marginBottom: "32px",
+  };
+
+  const formStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+  };
+
+  const inputContainerStyle = {
+    display: "flex",
+    flexDirection: "column",
+  };
+
+  const labelStyle = {
+    fontSize: "13px",
+    fontWeight: "600",
+    color: "#2c3e50",
+    marginBottom: "6px",
+  };
+
+  const inputStyle = {
+    padding: "10px 12px",
+    border: "1px solid #bdc3c7",
+    borderRadius: "6px",
+    fontSize: "14px",
+    fontFamily: "inherit",
+    boxSizing: "border-box",
+    transition: "border-color 0.2s",
+  };
+
+  const submitStyle = {
+    backgroundColor: "#3498db",
+    color: "#fff",
+    padding: "12px",
+    border: "none",
+    borderRadius: "6px",
+    fontWeight: "600",
+    fontSize: "16px",
+    cursor: "pointer",
+    marginTop: "8px",
+    transition: "all 0.3s",
+  };
+
+  const linkStyle = {
+    textAlign: "center",
+    marginTop: "20px",
+    fontSize: "14px",
+    color: "#7f8c8d",
+  };
+
+  const linkButtonStyle = {
+    color: "#3498db",
+    textDecoration: "none",
+    cursor: "pointer",
+    fontWeight: "600",
+    background: "none",
+    border: "none",
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
-        <h2 className="mb-6 text-center text-2xl font-bold text-gray-800">Sign In</h2>
+    <div style={containerStyle}>
+      <div style={cardStyle}>
+        <h2 style={titleStyle}>Welcome Back</h2>
+        <p style={subtitleStyle}>Sign in to your account</p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
+        {error && (
+          <div
+            style={{
+              backgroundColor: "#fee",
+              color: "#c33",
+              padding: "10px",
+              borderRadius: "4px",
+              marginBottom: "16px",
+              fontSize: "14px",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={formStyle}>
+          <div style={inputContainerStyle}>
+            <label style={labelStyle}>Email Address</label>
             <input
               type="email"
-              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={inputStyle}
               placeholder="you@example.com"
+              onFocus={(e) => (e.target.style.borderColor = "#3498db")}
+              onBlur={(e) => (e.target.style.borderColor = "#bdc3c7")}
               required
             />
           </div>
 
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="••••••••"
-              required
-            />
-          </div>
+         <div style={inputContainerStyle}>
+  <label style={labelStyle}>Password</label>
 
-          {/* Submit Button */}
+  <div style={{ position: "relative", width: "100%" }}>
+    <input
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      placeholder="••••••••"
+      required
+      style={{
+        ...inputStyle,
+        width: "100%",
+        paddingRight: "48px", // space for eye icon
+      }}
+      onFocus={(e) => (e.target.style.borderColor = "#3498db")}
+      onBlur={(e) => (e.target.style.borderColor = "#bdc3c7")}
+    />
+
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      aria-label={showPassword ? "Hide password" : "Show password"}
+      style={{
+        position: "absolute",
+        right: "14px",
+        top: "50%",
+        transform: "translateY(-50%)",
+        background: "transparent",
+        border: "none",
+        padding: 0,
+        margin: 0,
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#7f8c8d",
+        height: "100%", // key for centering
+      }}
+    >
+      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+    </button>
+  </div>
+</div>
+
+
+
           <button
             type="submit"
-            className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            style={submitStyle}
+            disabled={loading}
+            onMouseEnter={(e) =>
+              !loading && (e.target.style.backgroundColor = "#2980b9")
+            }
+            onMouseLeave={(e) =>
+              !loading && (e.target.style.backgroundColor = "#3498db")
+            }
           >
-            Sign In
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+
+        <div style={linkStyle}>
+          Don't have an account?{" "}
+          <button style={linkButtonStyle} onClick={() => navigate("/signup")}>
+            Sign Up
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-export default SignIn;   
+export default SignIn;
