@@ -1,11 +1,11 @@
-const API_BASE_URL = "http://localhost:5000";
+import { BASE_URL } from "../../utils";
 
 const api = {
   // -------------------------
   // SIGN UP
   // -------------------------
   register: async (userData) => {
-    const response = await fetch(`${API_BASE_URL}/signup`, {
+    const response = await fetch(`${BASE_URL}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +26,7 @@ const api = {
   // LOGIN
   // -------------------------
   login: async (email, password) => {
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch(`${BASE_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +40,7 @@ const api = {
       throw new Error(data.message || "Login failed");
     }
 
-    // Save token
+    // Save token if present
     if (data.access_token) {
       localStorage.setItem("access_token", data.access_token);
     }

@@ -1,43 +1,47 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { toast } from "react-toastify";
+
 import api from "../../services/api";
 
 function SignIn() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
     try {
       const response = await api.login(email, password);
 
-      if (response.success) {
-        alert("Welcome back!");
-        // Redirect based on user role
-        const userType =
-          response.data.user.role || response.data.user.user_type;
-        if (userType === "artisan") {
-          navigate("/artisan-dashboard");
-        } else {
-          navigate("/client-dashboard");
-        }
+      toast.success(response.message || "Login successful");
+
+      // Store user
+      if (response.user) {
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
+
+      const role = response.user?.role || "user";
+
+      if (role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (role === "agent") {
+        navigate("/agent-dashboard");
       } else {
-        setError(response.message || "Login failed");
+        navigate("/user-dashboard");
       }
     } catch (err) {
-      setError(err.message || "An error occurred during login");
+      toast.error(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
+
 
   const containerStyle = {
     minHeight: "100vh",
@@ -134,22 +138,6 @@ function SignIn() {
       <div style={cardStyle}>
         <h2 style={titleStyle}>Welcome Back</h2>
         <p style={subtitleStyle}>Sign in to your account</p>
-
-        {error && (
-          <div
-            style={{
-              backgroundColor: "#fee",
-              color: "#c33",
-              padding: "10px",
-              borderRadius: "4px",
-              marginBottom: "16px",
-              fontSize: "14px",
-            }}
-          >
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} style={formStyle}>
           <div style={inputContainerStyle}>
             <label style={labelStyle}>Email Address</label>

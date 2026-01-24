@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { User, Mail, Lock, Phone, MapPin, Eye, EyeOff } from "lucide-react";
+import { toast } from "react-toastify";
 import api from "../../services/api";
 
 function SignUp() {
@@ -13,44 +14,49 @@ function SignUp() {
   const [role, setRole] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+          const handleSubmit = async (e) => {
+          e.preventDefault();
+          setLoading(true);
 
-  if (password !== confirmPassword) {
-  setError("Password do not match");
-  setLoading(false);
-  return;
-  }
+          if (password !== confirmPassword) {
+            toast.error("Passwords do not match");
+            setLoading(false);
+            return;
+          }
 
+          try {
+            const response = await api.register({
+              first_name,
+              last_name,
+              email,
+              phone,
+              password,
+              role,
+            });
 
-    try {
-      const response = await api.register({
-        first_name,
-        last_name,
-        email,
-        phone,
-        password,
-        role
-      });
+            toast.success(response.message || "Account created successfully");
 
-      if (response.success) {
-        alert("Account created successfully!");
-        navigate("/dashboard");
-      } else {
-        setError(response.message || "Signup failed");
-      }
-    } catch (err) {
-      setError(err.message || "An error occurred during signup");
-    } finally {
-      setLoading(false);
-    }
-  };
+            if (response.user) {
+              localStorage.setItem("user", JSON.stringify(response.user));
+            }
+
+            if (role === "admin") {
+              navigate("/admin-dashboard");
+            } else if (role === "agent") {
+              navigate("/agent-dashboard");
+            } else {
+              navigate("/user-dashboard");
+            }
+          } catch (err) {
+            toast.error(err.message || "Signup failed");
+          } finally {
+            setLoading(false);
+          }
+        };
+
 
   const containerStyle = {
     minHeight: "100vh",
@@ -194,8 +200,6 @@ function SignUp() {
 
         {/* Form */}
         <div style={formContainerStyle}>
-          {error && <div style={errorStyle}>⚠️ {error}</div>}
-
           <form onSubmit={handleSubmit}>
             {/* First Name */}
             <div style={formGroupStyle}>
@@ -386,7 +390,7 @@ function SignUp() {
               </div>
             </div>
 
-           {/* Role */}
+            {/* Role */}
 <div style={formGroupStyle}>
   <label style={labelStyle} htmlFor="role">
     Join As
@@ -395,20 +399,22 @@ function SignUp() {
     <MapPin style={iconStyle} size={18} />
     <select
       id="role"
-      value={role} // Changed from location for clarity
+      value={role}
       onChange={(e) => setRole(e.target.value)}
       onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
       onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
       style={{
         ...inputStyle,
-        appearance: "none", // Removes default browser arrow
+        appearance: "none",
         backgroundColor: "white",
         cursor: "pointer"
       }}
+      required
     >
       <option value="" disabled>Select a role</option>
-      <option value="agent">Agent</option>
       <option value="user">User</option>
+      <option value="agent">Agent</option>
+      <option value="admin">Admin</option>
     </select>
   </div>
 </div>
