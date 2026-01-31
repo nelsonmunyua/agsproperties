@@ -66,34 +66,3 @@ const StatsOverview = ({stats}) => {
 
 export default StatsOverview;
 
-
-
-// import React from 'react';
-// import { Users, Building, FileText, DollarSign } from 'lucide-react';
-
-// const StatsCards = () => {
-//   const stats = [
-//     { label: 'Total Users', value: '1,234', icon: Users, color: '#3498db' },
-//     { label: 'Active Agents', value: '456', icon: Building, color: '#27ae60' },
-//     { label: 'Total Properties', value: '2,891', icon: FileText, color: '#f39c12' },
-//     { label: 'Total Revenue', value: '₦45.2M', icon: DollarSign, color: '#9b59b6' },
-//   ];
-
-//   return (
-//     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '30px' }}>
-//       {stats.map(({ label, value, icon: Icon, color }) => (
-//         <div key={label} style={{ background: '#fff', padding: '24px', borderRadius: '12px', display: 'flex', gap: '20px' }}>
-//           <div style={{ width: 56, height: 56, borderRadius: 12, background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-//             <Icon size={28} color={color} />
-//           </div>
-//           <div>
-//             <div style={{ fontSize: 28, fontWeight: 700 }}>{value}</div>
-//             <div style={{ fontSize: 14, color: '#95a5a6' }}>{label}</div>
-//           </div>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default StatsCards;

@@ -1,20 +1,41 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Home, Users, Building, DollarSign, Settings, 
+  Users, Building, DollarSign, Settings, 
   BarChart2, FileText, LogOut, Shield, UserPlus,
   Eye, Edit, Trash2, Check, X, AlertTriangle
 } from 'lucide-react';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import PendingAgentApprovals from './PendingAgentApprovals';
-import RecentUsers from './RecentUsers';
-import SystemOverview from './SystemOverview';
-import StatsOverview from './StatsOverview';
+import User from '../../../pages/admin/User';
+import Agents from '../../../pages/admin/Agents';
+import Properties from '../../../pages/admin/Properties';
+import Overview from '../../../pages/admin/Overview';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'users':
+        return <User />;
+      case 'agents':
+        return <Agents />; 
+      case 'properties':
+        return <Properties />   
+      case 'overview':
+      default:
+        return <Overview
+        //stats={stats}
+          agents={agents}
+          recentUsers={recentUsers}
+          systemStats={systemStats}
+          onApprove={handleApprove}
+          onReject={handleReject}
+           />    
+    }
+  };
 
   const agents = [
     { name: 'James Wilson', email: 'james@example.com', phone: '+254 712 345 678', date: 'Jan 15, 2025' },
@@ -92,27 +113,7 @@ const systemStats = [
 
         {/* Main Content */}
         <main style={contentStyle}>
-          {/* Stats */}
-          
-          <StatsOverview stats={stats}/>
-
-
-          {/* Pending Agent Approvals */}
-          <PendingAgentApprovals
-          agents={agents}
-          onApprove={handleApprove}
-          onReject={handleReject}  
-          />
-
-          {/* Recent Users */}
-          <RecentUsers
-              users={recentUsers}
-              onView={(user) => console.log('View:', user)}
-              onDelete={(user) => console.log('Delete:', user)}
-            />
-
-          {/* System Overview */}
-          <SystemOverview stats={systemStats} />
+         {renderContent()}
         </main>
       </div>
     </div>
