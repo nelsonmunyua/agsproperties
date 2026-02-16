@@ -1,11 +1,13 @@
-import { BASE_URL } from "../../utils";
+// import { BASE_URL } from "../../utils";
+const apiUrl = import.meta.env.VITE_API_URL;
+
 
 const api = {
   // -------------------------
   // SIGN UP
   // -------------------------
   register: async (userData) => {
-    const response = await fetch(`${BASE_URL}/signup`, {
+    const response = await fetch(`${apiUrl}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +28,7 @@ const api = {
   // LOGIN
   // -------------------------
   login: async (email, password) => {
-    const response = await fetch(`${BASE_URL}/login`, {
+    const response = await fetch(`${apiUrl}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

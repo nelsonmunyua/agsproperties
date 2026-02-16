@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Users, Building, DollarSign, Settings, 
-  BarChart2, FileText, LogOut, Shield, UserPlus,
-  Eye, Edit, Trash2, Check, X, AlertTriangle
-} from 'lucide-react';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import User from '../../../pages/admin/User';
@@ -15,27 +10,6 @@ import Overview from '../../../pages/admin/Overview';
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'users':
-        return <User />;
-      case 'agents':
-        return <Agents />; 
-      case 'properties':
-        return <Properties />   
-      case 'overview':
-      default:
-        return <Overview
-        //stats={stats}
-          agents={agents}
-          recentUsers={recentUsers}
-          systemStats={systemStats}
-          onApprove={handleApprove}
-          onReject={handleReject}
-           />    
-    }
-  };
 
   const agents = [
     { name: 'James Wilson', email: 'james@example.com', phone: '+254 712 345 678', date: 'Jan 15, 2025' },
@@ -51,27 +25,6 @@ const AdminDashboard = () => {
     console.log('Rejected:', agent);
   };
 
-  const recentUsers = [
-  { name: 'Alice Thompson', email: 'alice@example.com', role: 'User', date: 'Jan 15, 2025', status: 'active' },
-  { name: 'Bob Martinez', email: 'bob@example.com', role: 'Agent', date: 'Jan 14, 2025', status: 'active' },
-  { name: 'Carol White', email: 'carol@example.com', role: 'User', date: 'Jan 13, 2025', status: 'inactive' },
-];
-
-const systemStats = [
-  { label: 'System Uptime', value: '99.9%', color: '#27ae60' },
-  { label: 'Avg Response Time', value: '45ms', color: '#3498db' },
-  { label: 'Open Tickets', value: '12', color: '#f39c12' },
-  { label: 'Critical Alerts', value: '0', color: '#e74c3c' },
-];
-
- const stats = [
-    { label: 'Total Users', value: '1,234', color: '#3498db', icon: <Users size={28} /> },
-    { label: 'Active Agents', value: '456', color: '#27ae60', icon: <Building size={28} /> },
-    { label: 'Total Properties', value: '2,891', color: '#f39c12', icon: <FileText size={28} /> },
-    { label: 'Total Revenue', value: '₦45.2M', color: '#9b59b6', icon: <DollarSign size={28} /> },
-  ];
-
-
   // Get user data from localStorage
   const userData = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -81,39 +34,36 @@ const systemStats = [
     navigate('/signin');
   };
 
-  const containerStyle = {
-    minHeight: '100vh',
-    background: '#f1f2f6',
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'users':
+        return <User />;
+      case 'agents':
+        return <Agents />; 
+      case 'properties':
+        return <Properties />;   
+      case 'overview':
+      default:
+        return <Overview
+          agents={agents}
+          onApprove={handleApprove}
+          onReject={handleReject}
+        />;    
+    }
   };
-
-  const mainContainerStyle = {
-    display: 'flex',
-    minHeight: 'calc(100vh - 74px)',
-  };
-
-
-  const contentStyle = {
-    flex: 1,
-    padding: '30px',
-  };
-
-
 
   return (
-    <div style={containerStyle}>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      
-      <Header handleLogout={handleLogout} userData={userData}/>
+      <Header handleLogout={handleLogout} userData={userData} />
 
-      <div style={mainContainerStyle}>
+      <div className="flex flex-1">
         {/* Sidebar */}
-       
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab}  />
+        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Main Content */}
-        <main style={contentStyle}>
-         {renderContent()}
+        <main className="flex-1 p-6 lg:p-8 overflow-y-auto">
+          {renderContent()}
         </main>
       </div>
     </div>

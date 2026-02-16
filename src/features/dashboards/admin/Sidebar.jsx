@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Home,
   Users,
@@ -7,31 +6,12 @@ import {
   FileText,
   BarChart2,
   DollarSign,
-  Settings
+  Settings,
+  TrendingUp
 } from 'lucide-react';
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
-
-  const sidebarStyle = {
-    width: '260px',
-    background: '#fff',
-    padding: '20px 0',
-    borderRight: '1px solid #e0e0e0',
-  };
-
-  const navItemStyle = (isActive) => ({
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    padding: '14px 24px',
-    color: isActive ? '#3498db' : '#7f8c8d',
-    background: isActive ? '#f0f7ff' : 'transparent',
-    cursor: 'pointer',
-    fontWeight: isActive ? '600' : '400',
-    borderRight: isActive ? '3px solid #3498db' : '3px solid transparent',
-  });
-
-  const items = [
+  const menuItems = [
     { id: 'overview', label: 'Overview', icon: <Home size={20} /> },
     { id: 'users', label: 'Users', icon: <Users size={20} /> },
     { id: 'agents', label: 'Agents', icon: <Building size={20} /> },
@@ -42,21 +22,41 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <aside style={sidebarStyle}>
-      <nav>
-        {items.map(item => (
-          <div
+    <aside className="w-64 bg-white border-r border-slate-200 min-h-screen">
+      <nav className="p-4 space-y-1">
+        {menuItems.map((item) => (
+          <button
             key={item.id}
-            style={navItemStyle(activeTab === item.id)}
             onClick={() => setActiveTab(item.id)}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              activeTab === item.id
+                ? 'bg-slate-900 text-white'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
           >
             {item.icon}
-            <span>{item.label}</span>
-          </div>
+            <span className="font-medium">{item.label}</span>
+            {activeTab === item.id && (
+              <div className="ml-auto w-2 h-2 bg-emerald-400 rounded-full" />
+            )}
+          </button>
         ))}
       </nav>
+
+      {/* Quick Stats */}
+      <div className="absolute bottom-20 left-0 w-64 p-4">
+        <div className="bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl p-4 text-white">
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp className="w-4 h-4" />
+            <span className="text-sm font-medium">Quick Stats</span>
+          </div>
+          <p className="text-2xl font-bold">+12.5%</p>
+          <p className="text-xs text-white/70">Growth this month</p>
+        </div>
+      </div>
     </aside>
   );
 };
 
 export default Sidebar;
+

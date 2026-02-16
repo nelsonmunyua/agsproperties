@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { User, Mail, Lock, Phone, MapPin, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Lock, Phone, Home, ArrowRight, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
 import api from "../../services/api";
 
@@ -16,447 +16,357 @@ function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-          const handleSubmit = async (e) => {
-          e.preventDefault();
-          setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-          if (password !== confirmPassword) {
-            toast.error("Passwords do not match");
-            setLoading(false);
-            return;
-          }
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      setLoading(false);
+      return;
+    }
 
-          try {
-            const response = await api.register({
-              first_name,
-              last_name,
-              email,
-              phone,
-              password,
-              role,
-            });
+    if (!agreedToTerms) {
+      toast.error("Please agree to the terms and conditions");
+      setLoading(false);
+      return;
+    }
 
-            toast.success(response.message || "Account created successfully");
+    try {
+      const response = await api.register({
+        first_name,
+        last_name,
+        email,
+        phone,
+        password,
+        role,
+      });
 
-            if (response.user) {
-              localStorage.setItem("user", JSON.stringify(response.user));
-            }
+      toast.success(response.message || "Account created successfully");
 
-            if (role === "admin") {
-              navigate("/admin-dashboard");
-            } else if (role === "agent") {
-              navigate("/agent-dashboard");
-            } else {
-              navigate("/user-dashboard");
-            }
-          } catch (err) {
-            toast.error(err.message || "Signup failed");
-          } finally {
-            setLoading(false);
-          }
-        };
+      if (response.user) {
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
 
-
-  const containerStyle = {
-    minHeight: "100vh",
-    background: "#f5f5f5",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "20px",
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-  };
-
-  const cardStyle = {
-    width: "100%",
-    maxWidth: "450px",
-    backgroundColor: "#fff",
-    borderRadius: "12px",
-    boxShadow: "0 10px 40px rgba(0, 0, 0, 0.15)",
-    overflow: "hidden",
-  };
-
-  const headerStyle = {
-    background: "#f5f5f5",
-    color: "#2c3e50",
-    padding: "32px 24px",
-    textAlign: "center",
-  };
-
-  const headerTitleStyle = {
-    fontSize: "28px",
-    fontWeight: "700",
-    margin: "0 0 8px",
-  };
-
-  const headerDescStyle = {
-    fontSize: "14px",
-    opacity: "0.9",
-    margin: "0",
-  };
-
-  const formContainerStyle = {
-    padding: "32px 24px",
-  };
-
-  const errorStyle = {
-    backgroundColor: "#fee2e2",
-    color: "#991b1b",
-    padding: "12px 16px",
-    borderRadius: "8px",
-    marginBottom: "20px",
-    fontSize: "14px",
-    border: "1px solid #fecaca",
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-  };
-
-  const formGroupStyle = {
-    marginBottom: "18px",
-  };
-
-  const labelStyle = {
-    display: "block",
-    fontSize: "13px",
-    fontWeight: "600",
-    color: "#2c3e50",
-    marginBottom: "8px",
-    textTransform: "uppercase",
-    letterSpacing: "0.5px",
-  };
-
-  const inputWrapperStyle = {
-    position: "relative",
-    display: "flex",
-    alignItems: "center",
-  };
-
-  const inputStyle = {
-  width: "100%",
-  padding: "12px 44px 12px 40px",
-  border: "2px solid #e0e0e0",
-  borderRadius: "8px",
-  fontSize: "14px",
-  fontFamily: "inherit",
-  transition: "all 0.3s",
-  boxSizing: "border-box",
-};
-
-
-  const inputFocusStyle = {
-    outline: "none",
-    borderColor: "#3498db",
-    boxShadow: "0 0 0 3px rgba(52, 152, 219, 0.1)",
-  };
-
-  const iconStyle = {
-    position: "absolute",
-    left: "12px",
-    color: "#7f8c8d",
-    width: "18px",
-    height: "18px",
-  };
-
-  const submitButtonStyle = {
-    width: "100%",
-    padding: "14px",
-    backgroundColor: "#3498db",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    fontWeight: "600",
-    fontSize: "16px",
-    cursor: "pointer",
-    transition: "all 0.3s",
-    marginTop: "8px",
-  };
-
-  const footerStyle = {
-    padding: "20px 24px",
-    backgroundColor: "#f8f9fa",
-    textAlign: "center",
-    borderTop: "1px solid #e0e0e0",
-  };
-
-  const linkStyle = {
-    color: "#3498db",
-    textDecoration: "none",
-    fontWeight: "600",
-    transition: "color 0.3s",
+      if (role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (role === "agent") {
+        navigate("/agent-dashboard");
+      } else {
+        navigate("/user-dashboard");
+      }
+    } catch (err) {
+      toast.error(err.message || "Signup failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={cardStyle}>
-        {/* Header */}
-        <div style={headerStyle}>
-          <h1 style={headerTitleStyle}>Create Account</h1>
-          <p style={headerDescStyle}>
-            Join Agsproperties to secure your future home
+    <div className="min-h-screen flex">
+      {/* Left Side - Background Image with Overlay */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')`,
+          }}
+        />
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-800/70 to-slate-900/80" />
+        
+        {/* Content on Left Side */}
+        <div className="relative z-10 flex flex-col justify-center px-12 xl:px-16 w-full">
+          {/* Logo */}
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+              <Home className="w-7 h-7 text-white" />
+            </div>
+            <span className="text-2xl font-bold text-white">AgsProperties</span>
+          </div>
+
+          {/* Headline */}
+          <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
+            Start Your Journey<br />
+            <span className="text-emerald-400">Home Today</span>
+          </h1>
+          
+          <p className="text-lg text-slate-300 mb-10 max-w-md">
+            Create an account to access exclusive property listings, connect with trusted agents, and find your perfect home.
           </p>
+
+          {/* Features */}
+          <div className="space-y-4">
+            {[
+              "Browse thousands of listings",
+              "Save your favorite properties",
+              "Connect with verified agents",
+              "Get instant property updates"
+            ].map((feature, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                <span className="text-slate-300">{feature}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats */}
+          <div className="mt-12 grid grid-cols-3 gap-6">
+            <div className="text-center">
+              <p className="text-3xl font-bold text-white">2K+</p>
+              <p className="text-slate-400 text-sm">Properties</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-white">500+</p>
+              <p className="text-slate-400 text-sm">Agents</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl font-bold text-white">10K+</p>
+              <p className="text-slate-400 text-sm">Happy Clients</p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Form */}
-        <div style={formContainerStyle}>
-          <form onSubmit={handleSubmit}>
-            {/* First Name */}
-            <div style={formGroupStyle}>
-              <label style={labelStyle} htmlFor="first_name">
-                First Name
-              </label>
-              <div style={inputWrapperStyle}>
-                <User style={iconStyle} size={18} />
-                <input
-                  type="text"
-                  id="first_name"
-                  value={first_name}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  onFocus={(e) =>
-                    Object.assign(e.target.style, inputFocusStyle)
-                  }
-                  onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
-                  style={inputStyle}
-                  placeholder="Enter your first name"
-                  required
-                />
+      {/* Right Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-8 py-12 bg-gray-50 overflow-y-auto">
+        <div className="w-full max-w-md">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center gap-3 mb-6 justify-center">
+            <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center">
+              <Home className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-xl font-bold text-slate-800">AgsProperties</span>
+          </div>
+
+          {/* Welcome Text */}
+          <div className="text-center mb-6">
+            <h2 className="text-3xl font-bold text-slate-900 mb-2">Create Account</h2>
+            <p className="text-slate-600">Join us to find your dream home</p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name Row */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* First Name */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  First Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    type="text"
+                    value={first_name}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all duration-200"
+                    placeholder="John"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Last Name */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Last Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    type="text"
+                    value={last_name}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all duration-200"
+                    placeholder="Doe"
+                    required
+                  />
+                </div>
               </div>
             </div>
-             {/* Last Name */}
-            <div style={formGroupStyle}>
-              <label style={labelStyle} htmlFor="last_name">
-                Last Name
-              </label>
-              <div style={inputWrapperStyle}>
-                <User style={iconStyle} size={18} />
-                <input
-                  type="text"
-                  id="last_name"
-                  value={last_name}
-                  onChange={(e) => setLastName(e.target.value)}
-                  onFocus={(e) =>
-                    Object.assign(e.target.style, inputFocusStyle)
-                  }
-                  onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
-                  style={inputStyle}
-                  placeholder="Enter your last name"
-                  required
-                />
-              </div>
-            </div>
-
-
 
             {/* Email */}
-            <div style={formGroupStyle}>
-              <label style={labelStyle} htmlFor="email">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Email Address
               </label>
-              <div style={inputWrapperStyle}>
-                <Mail style={iconStyle} size={18} />
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="email"
-                  id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onFocus={(e) =>
-                    Object.assign(e.target.style, inputFocusStyle)
-                  }
-                  onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
-                  style={inputStyle}
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all duration-200"
                   placeholder="you@example.com"
                   required
                 />
               </div>
             </div>
 
-            
-
-
-            {/* Password */}
-            <div style={formGroupStyle}>
-              <label style={labelStyle} htmlFor="password">
-                Password
-              </label>
-              <div style={inputWrapperStyle}>
-                <Lock style={iconStyle} size={18} />
-
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
-                  onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
-                  style={inputStyle}
-                  placeholder="••••••••"
-                  required
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  style={{
-                    position: "absolute",
-                    right: "12px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    cursor: "pointer",
-                    color: "#7f8c8d",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-
-                        {/* Confirm Password */}
-            <div style={formGroupStyle}>
-              <label style={labelStyle} htmlFor="confirm_password">
-                Confirm Password
-              </label>
-              <div style={inputWrapperStyle}>
-                <Lock style={iconStyle} size={18} />
-
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
-                  onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
-                  style={inputStyle}
-                  placeholder="••••••••"
-                  required
-                />
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
-                  aria-label={
-                    showConfirmPassword
-                      ? "Hide confirm password"
-                      : "Show confirm password"
-                  }
-                  style={{
-                    position: "absolute",
-                    right: "12px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    cursor: "pointer",
-                    color: "#7f8c8d",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-    </button>
-  </div>
-</div>
-
-
             {/* Phone */}
-            <div style={formGroupStyle}>
-              <label style={labelStyle} htmlFor="phone">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Phone Number
               </label>
-              <div style={inputWrapperStyle}>
-                <Phone style={iconStyle} size={18} />
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="tel"
-                  id="phone"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  onFocus={(e) =>
-                    Object.assign(e.target.style, inputFocusStyle)
-                  }
-                  onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
-                  style={inputStyle}
-                  placeholder="0712345678"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all duration-200"
+                  placeholder="+1 234 567 8900"
                 />
               </div>
             </div>
 
-            {/* Role */}
-<div style={formGroupStyle}>
-  <label style={labelStyle} htmlFor="role">
-    Join As
-  </label>
-  <div style={inputWrapperStyle}>
-    <MapPin style={iconStyle} size={18} />
-    <select
-      id="role"
-      value={role}
-      onChange={(e) => setRole(e.target.value)}
-      onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
-      onBlur={(e) => (e.target.style.borderColor = "#e0e0e0")}
-      style={{
-        ...inputStyle,
-        appearance: "none",
-        backgroundColor: "white",
-        cursor: "pointer"
-      }}
-      required
-    >
-      <option value="" disabled>Select a role</option>
-      <option value="user">User</option>
-      <option value="agent">Agent</option>
-      <option value="admin">Admin</option>
-    </select>
-  </div>
-</div>
+            {/* Password Row */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pl-10 pr-12 py-3 rounded-lg border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all duration-200"
+                    placeholder="••••••••"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
 
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Confirm
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full pl-10 pr-12 py-3 rounded-lg border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all duration-200"
+                    placeholder="••••••••"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Role Selection */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                Join As
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { value: "user", label: "Buyer", icon: "🏠" },
+                  { value: "agent", label: "Agent", icon: "💼" },
+                 // { value: "admin", label: "Admin", icon: "⚙️" }
+                ].map((option) => (
+                  <label
+                    key={option.value}
+                    className={`cursor-pointer rounded-lg border-2 p-3 text-center transition-all duration-200 ${
+                      role === option.value
+                        ? "border-emerald-500 bg-emerald-50"
+                        : "border-slate-200 hover:border-slate-300"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="role"
+                      value={option.value}
+                      checked={role === option.value}
+                      onChange={(e) => setRole(e.target.value)}
+                      className="sr-only"
+                    />
+                    <span className="text-2xl block mb-1">{option.icon}</span>
+                    <span className={`text-sm font-medium ${
+                      role === option.value ? "text-emerald-700" : "text-slate-700"
+                    }`}>
+                      {option.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Terms Checkbox */}
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-1 w-4 h-4 rounded border-slate-300 text-emerald-500 focus:ring-emerald-500"
+              />
+              <span className="text-sm text-slate-600">
+                I agree to the{" "}
+                <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium">
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium">
+                  Privacy Policy
+                </a>
+              </span>
+            </label>
 
             {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              style={{
-                ...submitButtonStyle,
-                backgroundColor: loading ? "#7f8c8d" : "#3498db",
-                opacity: loading ? 0.8 : 1,
-              }}
-              onMouseEnter={(e) =>
-                !loading && (e.target.style.backgroundColor = "#2980b9")
-              }
-              onMouseLeave={(e) =>
-                !loading && (e.target.style.backgroundColor = "#3498db")
-              }
+              className="w-full py-3.5 px-6 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-2"
             >
-              {loading ? "Creating Account..." : "Sign Up"}
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  Create Account
+                  <ArrowRight size={18} />
+                </>
+              )}
             </button>
           </form>
-        </div>
 
-        {/* Footer */}
-        <div style={footerStyle}>
-          <p style={{ margin: "0 0 12px", fontSize: "14px", color: "#7f8c8d" }}>
-            Already have an account?
+          {/* Sign In Link */}
+          <p className="text-center mt-6 text-slate-600">
+            Already have an account?{" "}
+            <Link 
+              to="/signin" 
+              className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
+            >
+              Sign In
+            </Link>
           </p>
-          <Link
-            to="/signin"
-            style={{
-              ...linkStyle,
-              fontSize: "16px",
-            }}
-            onMouseEnter={(e) => (e.target.style.color = "#2980b9")}
-            onMouseLeave={(e) => (e.target.style.color = "#3498db")}
-          >
-            Sign In
-          </Link>
         </div>
       </div>
     </div>
@@ -464,3 +374,4 @@ function SignUp() {
 }
 
 export default SignUp;
+

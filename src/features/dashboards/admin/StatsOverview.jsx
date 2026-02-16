@@ -1,63 +1,66 @@
-import { Users, Building, FileText, DollarSign } from 'lucide-react';
+import { Users, Building, FileText, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
 
-const StatsOverview = ({stats}) => {
-
-    const statsContainerStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    gap: '20px',
-    marginBottom: '30px',
-  };
-
-  const statCardStyle = (color) => ({
-    background: '#fff',
-    borderRadius: '12px',
-    padding: '24px',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '20px',
-  });
-
-  const statIconStyle = (color) => ({
-    width: '56px',
-    height: '56px',
-    borderRadius: '12px',
-    background: `${color}15`,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: color,
-  });
-
-  const statInfoStyle = {
-    flex: 1,
-  };
-
-  const statNumberStyle = {
-    fontSize: '28px',
-    fontWeight: '700',
-    color: '#2c3e50',
-    marginBottom: '4px',
-  };
-
-  const statLabelStyle = {
-    fontSize: '14px',
-    color: '#95a5a6',
-  };
-  
+const StatsOverview = ({ stats }) => {
+  const statCards = [
+    {
+      label: 'Total Users',
+      value: stats[0]?.value || '0',
+      color: '#3498db',
+      bgGradient: 'from-blue-500/20 to-blue-600/10',
+      icon: <Users size={24} />,
+      trend: '+12%',
+      trendUp: true
+    },
+    {
+      label: 'Active Agents',
+      value: stats[1]?.value || '0',
+      color: '#10b981',
+      bgGradient: 'from-emerald-500/20 to-emerald-600/10',
+      icon: <Building size={24} />,
+      trend: '+8%',
+      trendUp: true
+    },
+    {
+      label: 'Total Properties',
+      value: stats[2]?.value || '0',
+      color: '#f59e0b',
+      bgGradient: 'from-amber-500/20 to-amber-600/10',
+      icon: <FileText size={24} />,
+      trend: '+24%',
+      trendUp: true
+    },
+    {
+      label: 'Total Revenue',
+      value: stats[3]?.value || '$0',
+      color: '#8b5cf6',
+      bgGradient: 'from-violet-500/20 to-violet-600/10',
+      icon: <DollarSign size={24} />,
+      trend: '+18%',
+      trendUp: true
+    }
+  ];
 
   return (
-    <div style={statsContainerStyle}>
-      {stats.map((stat, index) => (
-        <div key={index} style={statCardStyle(stat.color)}>
-          <div style={statIconStyle(stat.color)}>
-            {stat.icon}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {statCards.map((stat, index) => (
+        <div
+          key={index}
+          className={`bg-gradient-to-br ${stat.bgGradient} rounded-2xl p-6 border border-slate-100 hover:shadow-lg transition-all duration-300`}
+        >
+          <div className="flex items-start justify-between mb-4">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center"
+              style={{ backgroundColor: `${stat.color}20`, color: stat.color }}
+            >
+              {stat.icon}
+            </div>
+            <div className={`flex items-center gap-1 text-sm font-medium ${stat.trendUp ? 'text-emerald-600' : 'text-red-600'}`}>
+              {stat.trendUp ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+              {stat.trend}
+            </div>
           </div>
-          <div style={statInfoStyle}>
-            <div style={statNumberStyle}>{stat.value}</div>
-            <div style={statLabelStyle}>{stat.label}</div>
-          </div>
+          <h3 className="text-2xl font-bold text-slate-900 mb-1">{stat.value}</h3>
+          <p className="text-slate-600 text-sm">{stat.label}</p>
         </div>
       ))}
     </div>

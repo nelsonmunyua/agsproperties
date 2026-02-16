@@ -173,7 +173,7 @@ export default function FilterSearch({ filterProperties, onPropertyClick }) {
                     {property.location}
                   </p>
                   <p className="text-indigo-600 font-bold text-lg mb-2">
-                    ${property.price.toLocaleString()}
+                    Ksh {property.price.toLocaleString()}
                   </p>
                   
                   {/* Added basic property features */}

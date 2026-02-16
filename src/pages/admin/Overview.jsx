@@ -1,4 +1,4 @@
-import { BASE_URL } from "../../../utils";
+// import { BASE_URL } from "../../../utils";
 import { useEffect, useState } from "react";
 import { Users, Building, FileText, DollarSign } from 'lucide-react';
 import React from "react";
@@ -22,8 +22,10 @@ const Overview = ({
       useEffect(() => {
         const fetchStats = async () => {
           const token = localStorage.getItem('access_token');
+          const apiUrl = import.meta.env.VITE_API_URL;
 
-          const res = await fetch(`${BASE_URL}/admin/stats`, {
+
+          const res = await fetch(`${apiUrl}/admin/stats`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
