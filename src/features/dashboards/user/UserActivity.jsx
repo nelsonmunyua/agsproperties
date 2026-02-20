@@ -49,16 +49,22 @@ const ActivityItem = ({ activity }) => {
   );
 };
 
-const UserActivity = () => {
+const UserActivity = ({ limit = 0, onViewAll }) => {
     const [activity, setActivity] = useState([])
 
     useEffect(() => {
         const fetchUserActivity = async () => {
             const token = localStorage.getItem('access_token');
             const apiUrl = import.meta.env.VITE_API_URL;
+            
+            // Build URL with limit parameter if provided
+            let url = `${apiUrl}/user/recent-activity`;
+            if (limit > 0) {
+                url += `?limit=${limit}`;
+            }
 
             try {
-                const res = await fetch(`${apiUrl}/user/recent-activity`, {
+                const res = await fetch(url, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -74,7 +80,7 @@ const UserActivity = () => {
             }
         };
         fetchUserActivity();
-    })
+    }, [limit])
 
 
 
@@ -82,7 +88,7 @@ const UserActivity = () => {
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-slate-900">Recent Activity</h2>
-        <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
+        <button onClick={onViewAll} className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
           View All
         </button>
       </div>

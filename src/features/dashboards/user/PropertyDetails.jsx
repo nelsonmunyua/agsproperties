@@ -17,6 +17,19 @@ export default function PropertyDetails() {
       .then((data) => {
         setProperty(data);
         setLoading(false);
+        
+        // Record property view
+        const token = localStorage.getItem('access_token');
+        if (token) {
+          fetch(`${apiUrl}/user/record-view`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ property_id: parseInt(id) })
+          }).catch(err => console.error('Error recording view:', err));
+        }
       })
       .catch((error) => {
         console.error("Error fetching Property Details", error);

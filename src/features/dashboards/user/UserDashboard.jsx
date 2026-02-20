@@ -13,6 +13,14 @@ const UserDashboard = () => {
     navigate('/signin');
   };
 
+  const handleViewAllFavorites = () => {
+    navigate('/user/favorites');
+  };
+
+  const handleViewProperty = (property) => {
+    navigate(`/user/property/${property.id}`);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       <UserHeader userData={userData} onLogout={handleLogout} />
@@ -30,10 +38,14 @@ const UserDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
           <div className="lg:col-span-2">
             <QuickSearch />
-            <SavedProperties />
+            <SavedProperties 
+              limit={4} 
+              onViewAll={handleViewAllFavorites}
+              onViewProperty={handleViewProperty}
+            />
           </div>
           <div>
-            <UserActivity />
+            <UserActivity limit={8} onViewAll={handleViewAllFavorites} />
           </div>
         </div>
       </main>

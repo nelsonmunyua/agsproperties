@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Bed, Bath, Square, MapPin, Eye, Trash2, Heart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const UserPropertyCard = ({ property, onView, onRemove }) => {
   return (
@@ -53,7 +54,9 @@ const UserPropertyCard = ({ property, onView, onRemove }) => {
             className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 rounded-lg text-sm font-medium transition-colors"
           >
             <Eye size={14} />
+            {/* <Link to={`/user/property/${id}`} className="view-details-btn">
             View Details
+          </Link> */}
           </button>
         </div>
       </div>
@@ -61,16 +64,22 @@ const UserPropertyCard = ({ property, onView, onRemove }) => {
   );
 };
 
-const SavedProperties = ({ onViewProperty, onRemoveProperty }) => {
+const SavedProperties = ({ onViewProperty, onRemoveProperty, limit = 0, onViewAll }) => {
   const [properties, setProperties] = useState([]);
 
   useEffect(() => {
     const fetchSavedProperties = async () => {
         const token = localStorage.getItem('access_token');
         const apiUrl = import.meta.env.VITE_API_URL;
+        
+        // Build URL with limit parameter if provided
+        let url = `${apiUrl}/user/saved-properties`;
+        if (limit > 0) {
+            url += `?limit=${limit}`;
+        }
 
         try {
-            const res = await fetch(`${apiUrl}/user/saved-properties`, {
+            const res = await fetch(url, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -85,14 +94,14 @@ const SavedProperties = ({ onViewProperty, onRemoveProperty }) => {
     };
 
     fetchSavedProperties();
-  }, []);
+  }, [limit]);
 
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-slate-900">Your Saved Properties</h2>
-        <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
+        <button onClick={onViewAll} className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
           View All
         </button>
       </div>
