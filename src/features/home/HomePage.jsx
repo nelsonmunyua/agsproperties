@@ -59,7 +59,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL;
-    fetch(`${apiUrl}/properties`)
+    fetch(`${apiUrl}/user/properties`)
       .then((res) => res.json())
       .then((data) => {
         setProperties(data);

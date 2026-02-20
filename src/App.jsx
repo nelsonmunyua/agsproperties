@@ -7,6 +7,8 @@ import AgentDashboard from "./features/dashboards/agent/AgentDashboard";
 import AdminDashboard from "./features/dashboards/admin/AdminDashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Properties from "./pages/user/Properties";
+import PropertyDetails from "./features/dashboards/user/PropertyDetails";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
+          <Route path="/user/properties" element={<Properties />} />
+          <Route path="/user/property/:id" element={<PropertyDetails />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
         </Routes>

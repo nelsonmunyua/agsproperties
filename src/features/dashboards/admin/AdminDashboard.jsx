@@ -17,8 +17,31 @@ const AdminDashboard = () => {
     { name: 'Robert Chen', email: 'robert@example.com', phone: '+254 734 567 890', date: 'Jan 13, 2025' },
   ];
 
-  const handleApprove = (agent) => {
-    console.log('Approved:', agent);
+  const handleApprove = async (agent) => {
+    const token = localStorage.getItem('access_token');
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    try {
+      const res = await fetch(`${apiUrl}/admin/approve/${agent.id}`, {
+      method: "PATCH",
+      headers: {
+        'Authorization' : `Bearer ${token}`,
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({ is_verified: true })
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json()
+      throw new Error(errorData.message || 'Failed to update');
+    }
+
+    const data = await res.json();
+  
+
+  } catch (error){
+    console.error('Error:', error.message); 
+  };
   };
 
   const handleReject = (agent) => {

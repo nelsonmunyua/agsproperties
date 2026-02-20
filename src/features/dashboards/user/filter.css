@@ -1,0 +1,107 @@
+/* Compact Filter Styles */
+.filter-container {
+  font-size: 12px;
+}
+
+.filter-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: #1e293b;
+}
+
+.filter-group {
+  margin-bottom: 12px;
+}
+
+.filter-subtitle {
+  font-size: 10px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #475569;
+}
+
+.checkbox-input {
+  width: 14px;
+  height: 14px;
+  accent-color: #059669;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #475569;
+}
+
+.radio-input {
+  width: 14px;
+  height: 14px;
+  accent-color: #059669;
+}
+
+.custom-price-range {
+  margin-top: 8px;
+}
+
+.price-slider-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.slider-values {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 10px;
+  color: #64748b;
+}
+
+.slider {
+  width: 100%;
+  accent-color: #059669;
+}
+
+.filter-actions {
+  margin-top: 12px;
+}
+
+.reset-button {
+  width: 100%;
+  padding: 6px 10px;
+  background-color: #059669;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reset-button:hover {
+  background-color: #047857;
+}
+
