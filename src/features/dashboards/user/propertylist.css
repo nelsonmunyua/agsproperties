@@ -56,6 +56,36 @@
   color: white;
 }
 
+/* Like Button */
+.like-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.like-button:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+  transform: scale(1.1);
+}
+
+.like-button.favorited {
+  background-color: rgba(239, 68, 68, 0.9);
+}
+
+.like-button.favorited:hover {
+  background-color: rgba(239, 68, 68, 1);
+}
+
 .property-content {
   padding: 12px;
 }

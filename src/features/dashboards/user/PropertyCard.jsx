@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./propertylist.css";
 import { Link } from "react-router-dom";
+import { Heart } from "lucide-react";
 
-export default function PropertyCard({ property }) {
+export default function PropertyCard({ property, onToggleFavorite, isFavorited }) {
   const {
     id,
     primary_image,
@@ -16,11 +17,24 @@ export default function PropertyCard({ property }) {
     description,
   } = property;
 
+  const handleLike = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggleFavorite?.(id);
+  };
+
   return (
     <div className="property-card">
       <div className="property-image">
         <img src={primary_image || "https://via.placeholder.com/400x300"} alt={title} />
         <span className={`property-badge ${listing_type}`}>{listing_type}</span>
+        <button 
+          className={`like-button ${isFavorited ? 'favorited' : ''}`}
+          onClick={handleLike}
+          title={isFavorited ? "Remove from favorites" : "Add to favorites"}
+        >
+          <Heart size={20} fill={isFavorited ? "#ef4444" : "none"} color={isFavorited ? "#ef4444" : "#fff"} />
+        </button>
       </div>
 
       <div className="property-content">

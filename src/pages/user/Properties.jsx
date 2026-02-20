@@ -11,6 +11,7 @@ const Properties = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [userData, setUserData] = useState({});
+  const [favoriteIds, setFavoriteIds] = useState([]);
 
   // Get user data from localStorage
   useEffect(() => {
@@ -18,6 +19,27 @@ const Properties = () => {
     if (user) {
       setUserData(JSON.parse(user));
     }
+  }, []);
+
+  // Fetch user's favorites
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+
+    const apiUrl = import.meta.env.VITE_API_URL;
+    fetch(`${apiUrl}/user/saved-properties`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.properties) {
+          const ids = data.properties.map(p => p.id);
+          setFavoriteIds(ids);
+        }
+      })
+      .catch(err => console.error('Error fetching favorites:', err));
   }, []);
 
   // Fetch all properties on mount
@@ -31,6 +53,39 @@ const Properties = () => {
       })
       .catch((error) => console.error("Error fetching properties:", error));
   }, []);
+
+  // Toggle favorite
+  const handleToggleFavorite = async (propertyId) => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      alert('Please login to save favorites');
+      return;
+    }
+
+    const apiUrl = import.meta.env.VITE_API_URL;
+    try {
+      const response = await fetch(`${apiUrl}/user/favorite`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ property_id: propertyId })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        if (data.is_favorited) {
+          setFavoriteIds(prev => [...prev, propertyId]);
+        } else {
+          setFavoriteIds(prev => prev.filter(id => id !== propertyId));
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
 
   // Handle logout
   const handleLogout = () => {
@@ -180,7 +235,11 @@ const Properties = () => {
             </div>
             
             {filteredProperties.length > 0 ? (
-              <PropertyList properties={filteredProperties} />
+              <PropertyList 
+                properties={filteredProperties} 
+                favoriteIds={favoriteIds}
+                onToggleFavorite={handleToggleFavorite}
+              />
             ) : (
               <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-8 text-center">
                 <p className="text-slate-500 text-sm mb-3">No properties match your search criteria.</p>
