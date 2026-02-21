@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Bed, Bath, Square, MapPin, Eye, MessageSquare, Calendar, Clock, CheckCircle, XCircle } from 'lucide-react';
 import UserHeader from './UserHeader';
-import api from '../../../services/api';
+import api from '../../../services/user';
 
 const ActivityItem = ({ activity }) => {
   const { type, description, time, property } = activity;

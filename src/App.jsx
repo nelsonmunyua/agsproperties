@@ -3,6 +3,7 @@ import HomePage from "./features/home/HomePage";
 import SignUp from "./features/auth/SignUp";
 import SignIn from "./features/auth/SignIn";
 import UserDashboard from "./features/dashboards/user/UserDashboard";
+import UserProfile from "./features/dashboards/user/UserProfile";
 import AgentDashboard from "./features/dashboards/agent/AgentDashboard";
 import AdminDashboard from "./features/dashboards/admin/AdminDashboard";
 import { ToastContainer } from "react-toastify";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
+          <Route path="/user/profile" element={<UserProfile />} />
           <Route path="/user/favorites" element={<FavoritesPage />} />
           <Route path="/user/messages" element={<Messages />} />
           <Route path="/user/messages/:conversationId" element={<Messages />} />

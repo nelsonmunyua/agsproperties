@@ -5,4 +5,5 @@ export { default as QuickSearch } from './QuickSearch';
 export { default as SavedProperties } from './SavedProperties';
 export { default as UserActivity } from './UserActivity';
 export { default as FavoritesPage } from './FavoritesPage';
+export { default as UserProfile } from './UserProfile';
 

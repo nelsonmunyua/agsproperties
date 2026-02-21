@@ -26,7 +26,7 @@ const UserHeader = ({ userData, onLogout }) => {
           <NavLink icon={<Tent size={18}/>} label="Properties" onClick={() => handleNavigation('/user/properties')} />
           <NavLink icon={<Heart size={18} />} label="Favorites" onClick={() => handleNavigation('/user/favorites')} />
           <NavLink icon={<MessageCircle size={18} />} label="Messages" onClick={() => handleNavigation('/user/messages')} />
-          <NavLink icon={<User size={18} />} label="Profile" onClick={() => handleNavigation('/user-dashboard')} />
+          <NavLink icon={<User size={18} />} label="Profile" onClick={() => handleNavigation('/user/profile')} />
         </nav>
 
         {/* Right Side */}

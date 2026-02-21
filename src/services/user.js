@@ -4,51 +4,63 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 const api = {
   // -------------------------
-  // SIGN UP
+  // USER PROFILE
   // -------------------------
-  register: async (userData) => {
-    const response = await fetch(`${apiUrl}/signup`, {
-      method: "POST",
+  getUserProfile: async () => {
+    const response = await fetch(`${apiUrl}/user/profile`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
+        ...api.authHeaders(),
       },
-      body: JSON.stringify(userData),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Signup failed");
+      throw new Error(data.message || "Failed to fetch profile");
     }
 
     return data;
   },
 
-  // -------------------------
-  // LOGIN
-  // -------------------------
-  login: async (email, password) => {
-    const response = await fetch(`${apiUrl}/login`, {
-      method: "POST",
+  updateUserProfile: async (profileData) => {
+    const response = await fetch(`${apiUrl}/user/profile`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        ...api.authHeaders(),
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify(profileData),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Login failed");
-    }
-
-    // Save token if present
-    if (data.access_token) {
-      localStorage.setItem("access_token", data.access_token);
+      throw new Error(data.message || "Failed to update profile");
     }
 
     return data;
   },
+
+  getUserStats: async () => {
+    const response = await fetch(`${apiUrl}/user/stats`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...api.authHeaders(),
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to fetch stats");
+    }
+
+    return data;
+  },
+
 
   // -------------------------
   // AUTH HEADER HELPER

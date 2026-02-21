@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, MessageSquare, Send, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../../services/api';
+import api from '../../../services/user';
 
 export default function InquiryModal({ property, agent, onClose, onSuccess }) {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Phone, Mail, Building, Search, MoreVertical, Check, CheckCheck, MessageSquare, ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../../services/api';
+import api from '../../../services/user';
 import UserHeader from './UserHeader';
 
 export default function Messages() {

@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, Home, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "react-toastify";
-
-import api from "../../services/api";
+import api from "../../services/auth"
+// import api from "../../services/user";
 
 function SignIn() {
   const navigate = useNavigate();
