@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Properties from "./pages/user/Properties";
 import PropertyDetails from "./features/dashboards/user/PropertyDetails";
 import FavoritesPage from "./features/dashboards/user/FavoritesPage";
+import Messages from "./features/dashboards/user/Messages";
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/user/favorites" element={<FavoritesPage />} />
+          <Route path="/user/messages" element={<Messages />} />
+          <Route path="/user/messages/:conversationId" element={<Messages />} />
           <Route path="/user/properties" element={<Properties />} />
           <Route path="/user/property/:id" element={<PropertyDetails />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />

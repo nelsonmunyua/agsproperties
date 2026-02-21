@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { BedDouble, Bath, Ruler, ArrowLeft, Phone, Mail, User, Play } from "lucide-react";
+import { BedDouble, Bath, Ruler, ArrowLeft, Phone, Mail, User, Play, MessageSquare, Calendar } from "lucide-react";
 
+import InquiryModal from "./InquiryModal";
+import ScheduleVisitModal from "./ScheduleVisitModal";
 import "./propertydetails.css";
 
 export default function PropertyDetails() {
@@ -9,6 +11,8 @@ export default function PropertyDetails() {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showInquiryModal, setShowInquiryModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
 
   useEffect(() => {
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -185,21 +189,41 @@ export default function PropertyDetails() {
                 <a href={`mailto:${property.agent.email}`} className="contact-item">
                   <Mail size={16} /> {property.agent.email}
                 </a>
+                <button 
+                  onClick={() => setShowScheduleModal(true)}
+                  className="contact-item bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                >
+                  <Calendar size={16} /> Schedule Visit
+                </button>
+                <button 
+                  onClick={() => setShowInquiryModal(true)}
+                  className="contact-item bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                >
+                  <MessageSquare size={16} /> Send Inquiry
+                </button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* MAP SECTION */}
-      <div className="map-section">
-        <h3>Location Map</h3>
-        <img
-          src="https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=800&q=80"
-          alt="Map"
-          className="map-image"
+      {/* Schedule Visit Modal */}
+      {showScheduleModal && (
+        <ScheduleVisitModal 
+          property={property}
+          agent={property.agent}
+          onClose={() => setShowScheduleModal(false)}
         />
-      </div>
+      )}
+
+      {/* Inquiry Modal */}
+      {showInquiryModal && (
+        <InquiryModal 
+          property={property}
+          agent={property.agent}
+          onClose={() => setShowInquiryModal(false)}
+        />
+      )}
     </div>
   );
 }

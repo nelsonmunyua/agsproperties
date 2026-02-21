@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Bed, Bath, Square, MapPin, Eye, MessageSquare, Calendar, Clock } from 'lucide-react';
+import { Heart, Bed, Bath, Square, MapPin, Eye, MessageSquare, Calendar, Clock, CheckCircle, XCircle } from 'lucide-react';
+import UserHeader from './UserHeader';
+import api from '../../../services/api';
 
 const ActivityItem = ({ activity }) => {
   const { type, description, time, property } = activity;
@@ -114,7 +116,16 @@ const FavoritesPage = () => {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [scheduledVisits, setScheduledVisits] = useState([]);
   const [activeTab, setActiveTab] = useState('properties');
+
+  const userData = JSON.parse(localStorage.getItem('user') || '{}');
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    navigate('/signin');
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -143,6 +154,10 @@ const FavoritesPage = () => {
           const activitiesData = await activitiesRes.json();
           setActivities(activitiesData.activities || []);
         }
+
+        // Fetch all scheduled visits
+        const visitsData = await api.getScheduledVisits();
+        setScheduledVisits(visitsData.visits || []);
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -179,23 +194,7 @@ const FavoritesPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/user-dashboard')}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <ArrowLeft size={20} className="text-slate-600" />
-            </button>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">Favorites</h1>
-              <p className="text-sm text-slate-500">View all your saved properties and activities</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <UserHeader userData={userData} onLogout={handleLogout} />
 
       {/* Tab Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -209,6 +208,16 @@ const FavoritesPage = () => {
             }`}
           >
             Saved Properties ({properties.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('visits')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              activeTab === 'visits'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            Scheduled Visits ({scheduledVisits.length})
           </button>
           <button
             onClick={() => setActiveTab('activities')}
@@ -246,6 +255,70 @@ const FavoritesPage = () => {
                     onView={handleViewProperty}
                     onRemove={handleRemoveProperty}
                   />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : activeTab === 'visits' ? (
+          <div>
+            {scheduledVisits.length === 0 ? (
+              <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-12 text-center">
+                <Calendar size={48} className="mx-auto text-slate-300 mb-4" />
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">No scheduled visits yet</h3>
+                <p className="text-slate-500 mb-4">Schedule a visit to properties you're interested in</p>
+                <button
+                  onClick={() => navigate('/user/properties')}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-colors"
+                >
+                  Browse Properties
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {scheduledVisits.map((visit) => (
+                  <div key={visit.id} className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all duration-300">
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={visit.property?.image || "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?w=400"}
+                        alt={visit.property?.title || "property"}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <span className={`px-3 py-1 text-white text-xs font-semibold rounded-full ${
+                          visit.status === 'pending' ? 'bg-amber-500' : 'bg-green-500'
+                        }`}>
+                          {visit.status === 'pending' ? 'Pending' : 'Completed'}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4">
+                      <h3 className="text-base font-semibold text-slate-900 mb-2 line-clamp-1">{visit.property?.title}</h3>
+                      
+                      <div className="flex items-center gap-1 text-sm text-slate-500 mb-3">
+                        <MapPin size={14} />
+                        <span>{visit.property?.location || 'Location'}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-sm text-slate-600 mb-4">
+                        <Calendar size={14} className="text-amber-500" />
+                        <span>{visit.scheduled_time}</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span className="text-lg font-bold text-emerald-600">
+                          {visit.property?.currency}{visit.property?.price}
+                        </span>
+                        <button
+                          onClick={() => navigate(`/user/property/${visit.property?.id}`)}
+                          className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 rounded-lg text-sm font-medium transition-colors"
+                        >
+                          <Eye size={14} />
+                          View Details
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}

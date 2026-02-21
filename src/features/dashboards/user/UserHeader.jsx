@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'
-import { Home, Search, Heart, User, Tent ,LogOut, Building } from 'lucide-react';
+import { Home, MessageCircle, Heart, User, Tent ,LogOut, Building } from 'lucide-react';
 
 const UserHeader = ({ userData, onLogout }) => {
   const navigate = useNavigate();
@@ -24,8 +24,8 @@ const UserHeader = ({ userData, onLogout }) => {
         <nav className="hidden md:flex items-center gap-1">
           <NavLink icon={<Home size={18} />} label="Home" active onClick={() => handleNavigation('/user-dashboard')} />
           <NavLink icon={<Tent size={18}/>} label="Properties" onClick={() => handleNavigation('/user/properties')} />
-          <NavLink icon={<Search size={18} />} label="Search" onClick={() => handleNavigation('/user-dashboard')} />
           <NavLink icon={<Heart size={18} />} label="Favorites" onClick={() => handleNavigation('/user/favorites')} />
+          <NavLink icon={<MessageCircle size={18} />} label="Messages" onClick={() => handleNavigation('/user/messages')} />
           <NavLink icon={<User size={18} />} label="Profile" onClick={() => handleNavigation('/user-dashboard')} />
         </nav>
 
