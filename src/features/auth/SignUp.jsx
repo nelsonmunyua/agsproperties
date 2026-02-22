@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { User, Mail, Lock, Phone, Home, ArrowRight, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
-import api from "../../services/user";
+import api from "../../services/auth"
+
+// import api from "../../services/user";
 
 function SignUp() {
   const navigate = useNavigate();
