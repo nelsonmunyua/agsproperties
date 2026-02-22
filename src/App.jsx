@@ -9,6 +9,9 @@ import AdminDashboard from "./features/dashboards/admin/AdminDashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Properties from "./pages/user/Properties";
+import AgentProperties from "./pages/agent/Properties";
+import AgentPropertyDetails from "./pages/agent/PropertyDetails";
+import AgentPropertyForm from "./pages/agent/PropertyForm";
 import PropertyDetails from "./features/dashboards/user/PropertyDetails";
 import FavoritesPage from "./features/dashboards/user/FavoritesPage";
 import Messages from "./features/dashboards/user/Messages";
@@ -31,6 +34,10 @@ function App() {
           <Route path="/user/properties" element={<Properties />} />
           <Route path="/user/property/:id" element={<PropertyDetails />} />
           <Route path="/agent-dashboard" element={<AgentDashboard />} />
+          <Route path="/agent/properties" element={<AgentProperties />} />
+          <Route path="/agent/properties/new" element={<AgentPropertyForm />} />
+          <Route path="/agent/properties/:id" element={<AgentPropertyDetails />} />
+          <Route path="/agent/properties/:id/edit" element={<AgentPropertyForm />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
         </Routes>
       </Router>
@@ -39,3 +46,4 @@ function App() {
 }
 
 export default App;
+

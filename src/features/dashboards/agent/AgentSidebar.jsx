@@ -11,7 +11,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 
-const AgentSidebar = ({ activeTab, setActiveTab }) => {
+const AgentSidebar = ({ onNavigate, activeTab = 'overview' }) => {
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: <Home size={20} /> },
     { id: 'properties', label: 'My Properties', icon: <Building size={20} /> },
@@ -20,6 +20,12 @@ const AgentSidebar = ({ activeTab, setActiveTab }) => {
     { id: 'sales', label: 'Sales', icon: <DollarSign size={20} /> },
     { id: 'analytics', label: 'Analytics', icon: <BarChart2 size={20} /> },
   ];
+
+  const handleClick = (itemId) => {
+    if (onNavigate) {
+      onNavigate(itemId);
+    }
+  };
 
   return (
     <aside className="w-64 bg-slate-900 min-h-screen flex flex-col">
@@ -41,7 +47,7 @@ const AgentSidebar = ({ activeTab, setActiveTab }) => {
         {menuItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => setActiveTab(item.id)}
+            onClick={() => handleClick(item.id)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
               activeTab === item.id
                 ? 'bg-emerald-600 text-white'

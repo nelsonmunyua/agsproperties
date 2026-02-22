@@ -1,6 +1,7 @@
-import React from 'react';
-import { Users, Clock, ArrowRight } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Users, ArrowRight } from 'lucide-react';
 import { StatusBadge } from '../../dashboard/components';
+import api from '../../../services/agent';
 
 const InquiryCard = ({ inquiry, onReply }) => {
   const { name, property, time, status = 'new' } = inquiry || {};
@@ -12,14 +13,14 @@ const InquiryCard = ({ inquiry, onReply }) => {
           {name?.[0]?.toUpperCase() || '?'}
         </div>
         <div>
-          <p className="font-medium text-slate-900">{name}</p>
-          <p className="text-sm text-slate-500">{property}</p>
+          <p className="font-medium text-slate-900">{name || 'Unknown'}</p>
+          <p className="text-sm text-slate-500">{property || 'No property'}</p>
         </div>
       </div>
       <div className="flex items-center gap-4">
         <div className="text-right">
-          <StatusBadge status={status === 'new' ? 'new' : 'replied'} size="small" />
-          <p className="text-xs text-slate-400 mt-1">{time}</p>
+          <StatusBadge status={status === 'new' ? 'new' : status === 'replied' ? 'replied' : 'closed'} size="small" />
+          <p className="text-xs text-slate-400 mt-1">{time || 'Just now'}</p>
         </div>
         <button
           onClick={onReply}
@@ -32,14 +33,36 @@ const InquiryCard = ({ inquiry, onReply }) => {
   );
 };
 
-const AgentInquiryCard = ({ inquiries = [], onReply }) => {
-  const sampleInquiries = [
-    { id: 1, name: 'John Smith', property: '4 Bedroom Bungalow, Karen', time: '2 hours ago', status: 'new' },
-    { id: 2, name: 'Sarah Johnson', property: '5 Bedroom Mansion, Runda', time: '5 hours ago', status: 'replied' },
-    { id: 3, name: 'Mike Brown', property: '2 Bedroom Apartment, Donholm', time: 'Yesterday', status: 'new' },
-  ];
+const AgentInquiryCard = ({ inquiries: propInquiries, onReply }) => {
+  const [inquiries, setInquiries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const displayInquiries = inquiries.length > 0 ? inquiries : sampleInquiries;
+  useEffect(() => {
+    // If inquiries are passed via props, use them
+    if (propInquiries && propInquiries.length > 0) {
+      setInquiries(propInquiries);
+      setLoading(false);
+      return;
+    }
+
+    const fetchInquiries = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const data = await api.getInquiries(5);
+        setInquiries(data.inquiries || []);
+      } catch (err) {
+        console.error('Failed to fetch inquiries:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInquiries();
+  }, [propInquiries]);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
@@ -53,15 +76,23 @@ const AgentInquiryCard = ({ inquiries = [], onReply }) => {
         </button>
       </div>
       
-      <div className="space-y-3">
-        {displayInquiries.map((inquiry) => (
-          <InquiryCard
-            key={inquiry.id}
-            inquiry={inquiry}
-            onReply={() => onReply?.(inquiry)}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <div className="text-center text-slate-500 py-4">Loading inquiries...</div>
+      ) : error ? (
+        <div className="text-center text-red-500 py-4">{error}</div>
+      ) : inquiries.length === 0 ? (
+        <div className="text-center text-slate-500 py-4">No inquiries yet</div>
+      ) : (
+        <div className="space-y-3">
+          {inquiries.map((inquiry) => (
+            <InquiryCard
+              key={inquiry.id}
+              inquiry={inquiry}
+              onReply={() => onReply?.(inquiry)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

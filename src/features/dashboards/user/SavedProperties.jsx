@@ -54,9 +54,6 @@ const UserPropertyCard = ({ property, onView, onRemove }) => {
             className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 rounded-lg text-sm font-medium transition-colors"
           >
             <Eye size={14} />
-            {/* <Link to={`/user/property/${id}`} className="view-details-btn">
-            View Details
-          </Link> */}
           </button>
         </div>
       </div>

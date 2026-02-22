@@ -1,16 +1,16 @@
-import React from 'react';
-import { Building, Eye, Edit, MoreVertical } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Building, Eye, Edit } from 'lucide-react';
 import { StatusBadge } from '../../dashboard/components';
+import api from '../../../services/agent';
 
 const PropertyRow = ({ property, onView, onEdit }) => {
-  const {
-    title = "Property Title",
-    location = "Location",
-    price = "₦0",
-    status = "pending",
-    views = 0,
-    image,
-  } = property || {};
+  const { title, location, price, status, views, image } = property || {};
+
+  const formatPrice = (price, currency = 'Ksh') => {
+    if (!price) return 'Price on request';
+    return `${currency} ${new Intl.NumberFormat('en-KE').format(price)}`;
+  };
 
   return (
     <tr className="hover:bg-slate-50 transition-colors">
@@ -26,19 +26,19 @@ const PropertyRow = ({ property, onView, onEdit }) => {
             )}
           </div>
           <div>
-            <p className="font-medium text-slate-900">{title}</p>
-            <p className="text-sm text-slate-500">{location}</p>
+            <p className="font-medium text-slate-900">{title || 'Untitled Property'}</p>
+            <p className="text-sm text-slate-500">{location || 'No location'}</p>
           </div>
         </div>
       </td>
       <td className="px-6 py-4">
-        <span className="font-semibold text-slate-900">{price}</span>
+        <span className="font-semibold text-slate-900">{formatPrice(price)}</span>
       </td>
       <td className="px-6 py-4">
-        <StatusBadge status={status} />
+        <StatusBadge status={status || 'onsale'} />
       </td>
       <td className="px-6 py-4">
-        <span className="text-slate-600">{views}</span>
+        <span className="text-slate-600">{views || 0}</span>
       </td>
       <td className="px-6 py-4">
         <div className="flex items-center gap-1">
@@ -62,38 +62,57 @@ const PropertyRow = ({ property, onView, onEdit }) => {
   );
 };
 
-const AgentPropertyTable = ({ properties = [], onViewProperty, onEditProperty, onAddProperty }) => {
-  const sampleProperties = [
-    {
-      id: 1,
-      title: "4 Bedroom Bungalow",
-      location: "Karen, Nairobi",
-      price: "₦25,000,000",
-      status: "active",
-      views: 234,
-      image: "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?w=100"
-    },
-    {
-      id: 2,
-      title: "5 Bedroom Mansion",
-      location: "Runda, Nairobi",
-      price: "₦45,000,000",
-      status: "active",
-      views: 189,
-      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=100"
-    },
-    {
-      id: 3,
-      title: "1 Bedroom Apartment",
-      location: "Ngong Road, Nairobi",
-      price: "₦4,800,000",
-      status: "pending",
-      views: 87,
-      image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=100"
-    },
-  ];
+const AgentPropertyTable = ({ 
+  properties: propProperties, 
+  onViewProperty, 
+  onEditProperty, 
+  onAddProperty,
+  showViewAll = true 
+}) => {
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const displayProperties = properties.length > 0 ? properties : sampleProperties;
+  useEffect(() => {
+    // If properties are passed via props, use them
+    if (propProperties && propProperties.length > 0) {
+      setProperties(propProperties);
+      setLoading(false);
+      return;
+    }
+
+    const fetchAgentProperties = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const data = await api.getProperties(5);
+        // Transform the data to include location field
+        const transformed = (data.properties || []).map(p => ({
+          ...p,
+          location: 'Nairobi', // You can add location data if available
+          status: p.listing_type // Map listing_type to status for StatusBadge
+        }));
+        setProperties(transformed);
+      } catch (err) {
+        console.error('Failed to fetch agent properties:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAgentProperties();
+  }, [propProperties]);
+
+  const handleViewAll = () => {
+    if (onAddProperty) {
+      onAddProperty();
+    } else {
+      navigate('/agent/properties');
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
@@ -102,46 +121,57 @@ const AgentPropertyTable = ({ properties = [], onViewProperty, onEditProperty, o
           <Building size={20} className="text-emerald-600" />
           Recent Properties
         </h2>
-        {onAddProperty && (
-          <button className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
+        {showViewAll && (
+          <button 
+            onClick={handleViewAll}
+            className="text-sm text-emerald-600 hover:text-emerald-700 font-medium"
+          >
             View All
           </button>
         )}
       </div>
       
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-slate-50 border-b border-slate-100">
-              <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Property
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Price
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Views
-              </th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {displayProperties.map((property) => (
-              <PropertyRow
-                key={property.id}
-                property={property}
-                onView={onViewProperty}
-                onEdit={onEditProperty}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {loading ? (
+        <div className="p-6 text-center text-slate-500">Loading properties...</div>
+      ) : error ? (
+        <div className="p-6 text-center text-red-500">{error}</div>
+      ) : properties.length === 0 ? (
+        <div className="p-6 text-center text-slate-500">No properties found</div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-100">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Property
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Price
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Views
+                </th>
+                <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {properties.map((property) => (
+                <PropertyRow
+                  key={property.id}
+                  property={property}
+                  onView={onViewProperty}
+                  onEdit={onEditProperty}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
