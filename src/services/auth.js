@@ -20,6 +20,12 @@ const api = {
       throw new Error(data.message || "Signup failed");
     }
 
+    // Save token if present (for automatic login after signup)
+    if (data.access_token) {
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
+
     return data;
   },
 
