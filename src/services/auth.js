@@ -55,6 +55,27 @@ const api = {
     return data;
   },
 
+
+  // -------------------------
+  // LOGOUT
+  // -------------------------
+  logout: async () => {
+    const response = await fetch(`${apiUrl}/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...api.authHeaders(),
+      },
+    });
+
+    // Clear token regardless of server response
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+
+    const data = await response.json();
+    return data;
+  },
+
   // -------------------------
   // AUTH HEADER HELPER
   // -------------------------
